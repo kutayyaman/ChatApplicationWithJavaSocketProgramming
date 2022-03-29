@@ -10,7 +10,7 @@ public class Database {
     private static final String password = "admin";
     private static Connection connection = null;
 
-    public static void connect() {
+    public static Connection connect() {
         try {
             if (connection == null) {
                 connection = DriverManager.getConnection(jdbcURL, username, password);
@@ -23,6 +23,8 @@ public class Database {
             System.out.println("Error in connecting to PostgreSQL server");
             e.printStackTrace();
         }
+
+        return connection;
     }
 
     public static void disconnect() {
