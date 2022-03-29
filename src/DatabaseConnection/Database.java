@@ -5,12 +5,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
-    private final String jdbcURL = "jdbc:postgresql://localhost:5432/ChatApplication";
-    private final String username = "postgres";
-    private final String password = "admin";
-    private Connection connection = null;
+    private static final String jdbcURL = "jdbc:postgresql://localhost:5432/ChatApplication";
+    private static final String username = "postgres";
+    private static final String password = "admin";
+    private static Connection connection = null;
 
-    public void connect() {
+    public static void connect() {
         try {
             if (connection == null) {
                 connection = DriverManager.getConnection(jdbcURL, username, password);
@@ -25,7 +25,7 @@ public class Database {
         }
     }
 
-    public void disconnect() {
+    public static void disconnect() {
         try {
             if (connection != null) {
                 connection.close();
