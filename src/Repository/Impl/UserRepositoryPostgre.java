@@ -4,6 +4,7 @@ import DatabaseConnection.Database;
 import Entity.User;
 import Repository.UserRepository;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserRepositoryPostgre implements UserRepository {
                 id = getIdFromAddResult(pstmt);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
             System.out.println(e.getMessage());
         } finally {
             Database.disconnect();

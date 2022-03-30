@@ -1,4 +1,5 @@
 import GUIS.LoginGUI;
+import Repository.Impl.UserRepositoryPostgre;
 
 import javax.swing.*;
 
@@ -7,7 +8,7 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                LoginGUI loginGUI = new LoginGUI();
+                LoginGUI loginGUI = new LoginGUI(new UserRepositoryPostgre());
                 loginGUI.setVisible(true);
             }
         });
