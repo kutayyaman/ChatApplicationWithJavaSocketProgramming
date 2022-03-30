@@ -1,6 +1,6 @@
 CREATE TABLE Account(
                         id INT GENERATED ALWAYS AS IDENTITY,
-                        user_name VARCHAR(50) NOT NULL,
+                        user_name VARCHAR(50) NOT NULL UNIQUE,
                         password VARCHAR(50) NOT NULL,
                         PRIMARY KEY(id)
 );
