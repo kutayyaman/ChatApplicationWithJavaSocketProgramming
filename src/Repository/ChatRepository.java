@@ -6,7 +6,7 @@ import Entity.User;
 import java.util.List;
 
 public interface ChatRepository {
-    List<Chat> getAllByAccountIdWithMessages(Long accountId);
+    List<Chat> getAllByAccountIdWithMessages(Integer accountId);
 
     Chat createAChat(List<User> users, User creatorUser);
 }

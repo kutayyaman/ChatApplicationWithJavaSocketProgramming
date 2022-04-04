@@ -13,17 +13,17 @@ import java.util.List;
 
 public class ChatRepositoryImpl implements ChatRepository {
     @Override
-    public List<Chat> getAllByAccountIdWithMessages(Long accountId) {
+    public List<Chat> getAllByAccountIdWithMessages(Integer accountId) {
         String SQL = "Select c.id, m.id, m.body, m.sender_account_id from Chat c " +
                 "INNER JOIN Account_Chat AC on c.id = AC.chat_id " +
-                "INNER JOIN Message M on c.id = M.chat_id " +
+                "LEFT OUTER JOIN Message M on c.id = M.chat_id " +
                 "WHERE AC.account_id = ? " +
                 "ORDER BY c.id ASC";
         List<Chat> result = new ArrayList<>();
         try {
             Connection connection = Database.connect();
             PreparedStatement pstmt = connection.prepareStatement(SQL);
-            pstmt.setLong(1, accountId);
+            pstmt.setInt(1, accountId);
             ResultSet rst = pstmt.executeQuery();
 
             result = getAllChatFromResultSet(rst);
@@ -90,6 +90,9 @@ public class ChatRepositoryImpl implements ChatRepository {
             }
             messages.add(message);
             chat.setMessages(messages);
+        }
+        if (chat.getMessages().size() > 0) {
+            result.add(chat);
         }
         return result;
     }
