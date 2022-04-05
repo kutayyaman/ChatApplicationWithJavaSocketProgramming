@@ -18,10 +18,10 @@ public class LoginGUI extends JFrame {
     private JButton registerButton;
     private final UserRepository userRepository;
 
-    public LoginGUI(UserRepository userRepository){
+    public LoginGUI(UserRepository userRepository) {
         this.userRepository = userRepository;
         add(panel);
-        setSize(400,200);
+        setSize(400, 200);
         setTitle("Login Screen");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -31,9 +31,12 @@ public class LoginGUI extends JFrame {
                 String userName = usernameTextField.getText();
                 String password = passwordTextField.getText();
                 Boolean isTheUserExist = userRepository.isTheUserExist(userName, password);
-                if(isTheUserExist){
-                    JOptionPane.showMessageDialog(null,"Login Success");
-                }else{
+                User user = userRepository.getByUserName(userName);
+                if (isTheUserExist) {
+                    ClientChatGUI clientChatGUI = new ClientChatGUI(user);
+                    dispose();
+                    clientChatGUI.setVisible(true);
+                } else {
                     JOptionPane.showMessageDialog(null, "Check your username and password");
                 }
             }
@@ -45,18 +48,18 @@ public class LoginGUI extends JFrame {
                 String password = passwordTextField.getText();
                 Boolean isUserNameValid = !StringUtil.isNullOrEmpty(userName);
                 Boolean isPasswordValid = !StringUtil.isNullOrEmpty(password);
-                if(!isUserNameValid){
+                if (!isUserNameValid) {
                     JOptionPane.showMessageDialog(null, "Username cannot be empty");
                     return;
-                }else if(!isPasswordValid){
+                } else if (!isPasswordValid) {
                     JOptionPane.showMessageDialog(null, "Password cannot be empty");
                     return;
                 }
                 User user = userRepository.add(new User(userName, password));
-                if(user == null || user.getId()==null || user.getId()==0){
+                if (user == null || user.getId() == null || user.getId() == 0) {
                     return;
                 }
-                JOptionPane.showMessageDialog(null,"User created");
+                JOptionPane.showMessageDialog(null, "User created");
             }
         });
     }
