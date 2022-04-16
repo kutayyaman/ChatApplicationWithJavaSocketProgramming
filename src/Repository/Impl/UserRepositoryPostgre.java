@@ -94,6 +94,30 @@ public class UserRepositoryPostgre implements UserRepository {
         return users;
     }
 
+    @Override
+    public List<User> getByChatId(Integer chatId) {
+        List<User> users = new ArrayList<>();
+        String SQL = "SELECT A.id, A.user_name, A.password FROM Account A " +
+                "INNER JOIN Account_Chat AC on A.id = AC.account_id " +
+                "WHERE AC.chat_id = ?";
+
+        try {
+            Connection connection = Database.connect();
+            PreparedStatement pstmt = null;
+            pstmt = connection.prepareStatement(SQL);
+            pstmt.setInt(1, chatId);
+            ResultSet rst = pstmt.executeQuery();
+            while (rst.next()) {
+                User user = getUserFromResultSet(rst);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
     private User getUserFromResultSet(ResultSet rst) throws SQLException {
         User user;
         String userName;

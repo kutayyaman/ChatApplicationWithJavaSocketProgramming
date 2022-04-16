@@ -12,4 +12,6 @@ public interface UserRepository {
     Boolean isTheUserExist(String userName, String password);
 
     List<User> getAll();
+
+    List<User> getByChatId(Integer chatId);
 }
