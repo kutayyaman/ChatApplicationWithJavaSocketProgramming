@@ -88,12 +88,12 @@ public class ChatRepositoryImpl implements ChatRepository {
             if (messages == null) {
                 messages = new ArrayList<>();
             }
-            messages.add(message);
+            if(messageId!=0){
+                messages.add(message);
+            }
             chat.setMessages(messages);
         }
-        if (chat.getMessages().size() > 0) {
-            result.add(chat);
-        }
+        result.add(chat);
         return result;
     }
 }
