@@ -18,7 +18,7 @@ public class ChatRepositoryImpl implements ChatRepository {
                 "INNER JOIN Account_Chat AC on c.id = AC.chat_id " +
                 "LEFT OUTER JOIN Message M on c.id = M.chat_id " +
                 "WHERE AC.account_id = ? " +
-                "ORDER BY c.id ASC";
+                "ORDER BY m.id DESC";
         List<Chat> result = new ArrayList<>();
         try {
             Connection connection = Database.connect();
