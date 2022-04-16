@@ -28,4 +28,9 @@ public class Chat {
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d-%s", this.id, "chatName");
+    }
 }
