@@ -93,7 +93,9 @@ public class ChatRepositoryImpl implements ChatRepository {
             }
             chat.setMessages(messages);
         }
-        result.add(chat);
+        if(chat.getId()!=null && chat.getId()!=0){
+            result.add(chat);
+        }
         return result;
     }
 }
