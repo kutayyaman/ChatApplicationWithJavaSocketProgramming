@@ -59,9 +59,6 @@ public class ClientHandler implements Runnable {
 
     private void sendMessageToChat(String senderUsername, String message, Integer chatId) {
         List<User> usersToSendMessage = userRepository.getByChatId(chatId);
-        User senderUser = userRepository.getByUserName(senderUsername);
-        Message messageToDatabase = new Message(null, message, senderUser.getId(), chatId);
-        messageRepository.add(messageToDatabase);
 
         for (ClientHandler clientHandler : clientHandlers) {
             try {
