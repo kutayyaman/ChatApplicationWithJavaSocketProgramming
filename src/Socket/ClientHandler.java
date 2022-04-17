@@ -19,7 +19,6 @@ public class ClientHandler implements Runnable {
     private BufferedWriter bufferedWriter;
     private String clientUsername;
     private UserRepository userRepository;
-    private MessageRepository messageRepository;
 
     public ClientHandler(Socket socket) {
         try {
@@ -29,7 +28,6 @@ public class ClientHandler implements Runnable {
             this.clientUsername = bufferedReader.readLine(); //socket araciligiyla ilk basta client baglanirken bu tarafa userName bilgisini yollamasini bekliyor
             clientHandlers.add(this);
             this.userRepository = new UserRepositoryPostgre();
-            this.messageRepository = new MessageRepositoryImpl();
             //broadcastMessage("SERVER: " + clientUsername + " has entered the chat!");
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);

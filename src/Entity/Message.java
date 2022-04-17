@@ -5,12 +5,14 @@ public class Message {
     private String body;
     private Integer sender_account_id;
     private Integer chat_id;
+    private String senderUserName;
 
-    public Message(Integer id, String body, Integer sender_account_id, Integer chat_id) {
+    public Message(Integer id, String body, Integer sender_account_id, Integer chat_id, String senderUserName) {
         this.id = id;
         this.body = body;
         this.sender_account_id = sender_account_id;
         this.chat_id = chat_id;
+        this.senderUserName = senderUserName;
     }
 
     public Message() {
@@ -46,5 +48,13 @@ public class Message {
 
     public void setChat_id(Integer chat_id) {
         this.chat_id = chat_id;
+    }
+
+    public String getSenderUserName() {
+        return senderUserName;
+    }
+
+    public void setSenderUserName(String senderUserName) {
+        this.senderUserName = senderUserName;
     }
 }

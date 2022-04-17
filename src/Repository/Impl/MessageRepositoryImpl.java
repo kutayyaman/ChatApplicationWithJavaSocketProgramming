@@ -34,11 +34,12 @@ public class MessageRepositoryImpl implements MessageRepository {
     }
 
     private PreparedStatement getAddPreparedStatement(Message message, Connection connection) throws SQLException {
-        String SQL = "insert into message(body, sender_account_id, chat_id) values (?,?,?)";
+        String SQL = "insert into message(body, sender_account_id, chat_id, sender_user_name) values (?,?,?,?)";
         PreparedStatement pstmt = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
         pstmt.setString(1, message.getBody());
         pstmt.setInt(2, message.getSender_account_id());
         pstmt.setInt(3, message.getChat_id());
+        pstmt.setString(4, message.getSenderUserName());
         return pstmt;
     }
 }

@@ -71,7 +71,7 @@ public class ClientChatGUI extends JFrame {
     }
 
     private void sendMessageToTheSelectedChat(String messageBody) {
-        Message message = new Message(null, messageBody, user.getId(), this.selectedChatId);
+        Message message = new Message(null, messageBody, user.getId(), this.selectedChatId, user.getUserName());
         messageRepository.add(message);
         updateChatList();
         updateSelectedChatTextArea();
@@ -83,7 +83,7 @@ public class ClientChatGUI extends JFrame {
         List<Message> messages = selectedChat.getMessages().stream().sorted(Comparator.comparingInt(Message::getId)).collect(Collectors.toList());
         String textAreaChatContent = messages.size() > 0 ? "" : "This chat has no message yet";
         for (Message message : messages) {
-            textAreaChatContent += String.format("%d : %s\n", message.getSender_account_id(), message.getBody());
+            textAreaChatContent += String.format("%s : %s\n", message.getSenderUserName(), message.getBody());
         }
         textAreaChat.setText(textAreaChatContent);
     }
