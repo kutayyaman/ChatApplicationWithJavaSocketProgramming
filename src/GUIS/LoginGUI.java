@@ -1,6 +1,10 @@
 package GUIS;
 
 import Entity.User;
+import Repository.ChatRepository;
+import Repository.Impl.ChatRepositoryImpl;
+import Repository.Impl.MessageRepositoryImpl;
+import Repository.MessageRepository;
 import Repository.UserRepository;
 import Utils.StringUtil;
 
@@ -33,7 +37,9 @@ public class LoginGUI extends JFrame {
                 Boolean isTheUserExist = userRepository.isTheUserExist(userName, password);
                 User user = userRepository.getByUserName(userName);
                 if (isTheUserExist) {
-                    ClientChatGUI clientChatGUI = new ClientChatGUI(user);
+                    ChatRepository chatRepository = new ChatRepositoryImpl();
+                    MessageRepository messageRepository = new MessageRepositoryImpl();
+                    ClientChatGUI clientChatGUI = new ClientChatGUI(user, chatRepository, messageRepository);
                     dispose();
                     clientChatGUI.setVisible(true);
                 } else {

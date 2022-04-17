@@ -1,5 +1,7 @@
 package Socket;
 
+import GUIS.ClientChatGUI;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -9,11 +11,13 @@ public class Client {
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private String username;
+    private ClientChatGUI clientChatGUI;
 
-    public Client(Socket socket, String username) {
+    public Client(Socket socket, String username, ClientChatGUI clientChatGUI) {
         try {
             this.socket = socket;
             this.username = username;
+            this.clientChatGUI = clientChatGUI;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             bufferedWriter.write(username); // we write this to announce when CliendHander is created
@@ -46,6 +50,8 @@ public class Client {
                     try {
                         msgFromServer = bufferedReader.readLine();
                         System.out.println(msgFromServer); // bu clienta mesaj geldiyse hem aktif sohbeti hem chat listesini guncellemeli yani buraya ClientChatGUI'dan methodlar cagrilcak
+                        clientChatGUI.updateChatList();
+                        clientChatGUI.updateSelectedChatTextArea();
                     } catch (IOException e) {
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
@@ -75,8 +81,8 @@ public class Client {
         System.out.println("Enter your username for the group chat: ");
         String username = scanner.nextLine();
         Socket socket = new Socket("localhost", 1234);
-        Client client = new Client(socket, username);
+        /*Client client = new Client(socket, username);
         client.listenForMessage();
-        client.sendMessage("4 numarali chatteki marala deneme mesaji",5);
+        client.sendMessage("4 numarali chatteki marala deneme mesaji",5);*/
     }
 }
