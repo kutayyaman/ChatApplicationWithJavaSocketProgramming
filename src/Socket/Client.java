@@ -16,21 +16,18 @@ public class Client {
             this.username = username;
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            bufferedWriter.write(username); // we write this to announce when CliendHander is created
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
     }
 
-    public void sendMessage() {
+    public void sendMessage(String message, Integer chatId) {
         try {
-            bufferedWriter.write(username); // we write this to announce when CliendHander is created
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
-
-            Scanner scanner = new Scanner(System.in);
-            while (socket.isConnected()) {
-                String messageToSend = scanner.nextLine();
-                bufferedWriter.write(username + ": " + messageToSend);
+            if (socket.isConnected()) {
+                bufferedWriter.write(username + ":" + message + ":" + chatId);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
             }
@@ -43,12 +40,12 @@ public class Client {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String msgFromGroupChat;
+                String msgFromServer;
 
                 while (socket.isConnected()) {
                     try {
-                        msgFromGroupChat = bufferedReader.readLine();
-                        System.out.println(msgFromGroupChat);
+                        msgFromServer = bufferedReader.readLine();
+                        System.out.println(msgFromServer); // bu clienta mesaj geldiyse hem aktif sohbeti hem chat listesini guncellemeli yani buraya ClientChatGUI'dan methodlar cagrilcak
                     } catch (IOException e) {
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
@@ -80,6 +77,6 @@ public class Client {
         Socket socket = new Socket("localhost", 1234);
         Client client = new Client(socket, username);
         client.listenForMessage();
-        client.sendMessage();
+        client.sendMessage("4 numarali chatteki marala deneme mesaji",5);
     }
 }
