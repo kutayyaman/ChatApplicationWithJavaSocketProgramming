@@ -7,6 +7,7 @@ CREATE TABLE Account(
 
 CREATE TABLE Chat(
                      id INT GENERATED ALWAYS AS IDENTITY,
+                     chat_name varchar(100) NOT NULL,
                      PRIMARY KEY(id)
 );
 
