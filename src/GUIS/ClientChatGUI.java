@@ -25,18 +25,21 @@ public class ClientChatGUI extends JFrame {
     private JButton buttonSend;
     private JTextArea textAreaChat;
     private JList chatJList;
+    private JButton buttonCreateChat;
     private User user;
     private ChatRepository chatRepository;
     private MessageRepository messageRepository;
     private List<Chat> chats;
     Integer selectedChatId = null;
     Client client;
+    ClientChatGUI clientChatGUI;
 
 
     public ClientChatGUI(User user, ChatRepository chatRepository, MessageRepository messageRepository) {
+        this.clientChatGUI = this;
         this.user = user;
         add(panel1);
-        setSize(800, 800);
+        setSize(450, 450);
         setTitle(String.format("%d %s", user.getId(), user.getUserName()));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         labelUsername.setText(user.getUserName());
@@ -68,17 +71,32 @@ public class ClientChatGUI extends JFrame {
                 updateSelectedChatTextAreaByJListSelectedItem();
             }
         });
+
+        buttonCreateChat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ChatCreateGUI chatCreateGUI = new ChatCreateGUI(user, clientChatGUI);
+                chatCreateGUI.setVisible(true);
+            }
+        });
     }
 
-    private void sendMessageToTheSelectedChat(String messageBody) {
-        Message message = new Message(null, messageBody, user.getId(), this.selectedChatId, user.getUserName());
+    public void sendMessageToAChat(String messageBody, Integer chatId) {
+        Message message = new Message(null, messageBody, user.getId(), chatId, user.getUserName());
         messageRepository.add(message);
-        updateChatList();
-        updateSelectedChatTextArea();
+        /*updateChatList();
+        updateSelectedChatTextArea();*/
         client.sendMessage(messageBody, selectedChatId);
     }
 
+    private void sendMessageToTheSelectedChat(String messageBody) {
+        sendMessageToAChat(messageBody, this.selectedChatId);
+    }
+
     public void updateSelectedChatTextArea() {
+        if (selectedChatId == null || selectedChatId == 0) {
+            return;
+        }
         Chat selectedChat = chats.stream().filter(chat -> chat.getId() == selectedChatId).collect(Collectors.toList()).get(0);
         List<Message> messages = selectedChat.getMessages().stream().sorted(Comparator.comparingInt(Message::getId)).collect(Collectors.toList());
         String textAreaChatContent = messages.size() > 0 ? "" : "This chat has no message yet";
@@ -90,10 +108,13 @@ public class ClientChatGUI extends JFrame {
 
     private void updateSelectedChatTextAreaByJListSelectedItem() {
         Object selectedValue = chatJList.getSelectedValue();
-        if(selectedValue == null){
+        if (selectedValue == null) {
             return;
         }
         String selectedChatString = selectedValue.toString();
+        if (!selectedChatString.contains("-")) {
+            return;
+        }
         selectedChatId = Integer.valueOf(selectedChatString.split("-")[0]);
         updateSelectedChatTextArea();
     }
@@ -105,5 +126,10 @@ public class ClientChatGUI extends JFrame {
             model.addElement(chat.toString());
         }
         chatJList.setModel(model);
+    }
+
+    public void updateChatListAndSelectedChatTextArea() {
+        updateChatList();
+        updateSelectedChatTextArea();
     }
 }

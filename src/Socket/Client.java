@@ -50,8 +50,7 @@ public class Client {
                     try {
                         msgFromServer = bufferedReader.readLine();
                         System.out.println(msgFromServer); // bu clienta mesaj geldiyse hem aktif sohbeti hem chat listesini guncellemeli yani buraya ClientChatGUI'dan methodlar cagrilcak
-                        clientChatGUI.updateChatList();
-                        clientChatGUI.updateSelectedChatTextArea();
+                        clientChatGUI.updateChatListAndSelectedChatTextArea();
                     } catch (IOException e) {
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
