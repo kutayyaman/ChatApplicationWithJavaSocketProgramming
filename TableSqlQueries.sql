@@ -38,3 +38,14 @@ CREATE TABLE Message(
                             FOREIGN KEY(chat_id)
                                 REFERENCES Chat(id)
 );
+
+CREATE TABLE global_chat_messages(
+                                     id INT GENERATED ALWAYS AS IDENTITY,
+                                     body varchar(250),
+                                     sender_account_id INT,
+                                     sender_user_name varchar(50) not null,
+                                     PRIMARY KEY(id),
+                                     CONSTRAINT fk_account
+                                         FOREIGN KEY(sender_account_id)
+                                             REFERENCES Account(id)
+);
