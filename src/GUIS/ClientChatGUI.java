@@ -4,6 +4,7 @@ import Entity.Chat;
 import Entity.Message;
 import Entity.User;
 import Repository.ChatRepository;
+import Repository.Impl.GlobalChatMessageRepositoryImpl;
 import Repository.MessageRepository;
 import Socket.Client;
 
@@ -26,6 +27,7 @@ public class ClientChatGUI extends JFrame {
     private JTextArea textAreaChat;
     private JList chatJList;
     private JButton buttonCreateChat;
+    private JButton buttonOpenGlobalChat;
     private User user;
     private ChatRepository chatRepository;
     private MessageRepository messageRepository;
@@ -33,6 +35,7 @@ public class ClientChatGUI extends JFrame {
     Integer selectedChatId = null;
     Client client;
     ClientChatGUI clientChatGUI;
+    GlobalChatGUI globalChatGUI;
 
 
     public ClientChatGUI(User user, ChatRepository chatRepository, MessageRepository messageRepository) {
@@ -42,7 +45,7 @@ public class ClientChatGUI extends JFrame {
         setSize(450, 450);
         setTitle(String.format("%d %s", user.getId(), user.getUserName()));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        labelUsername.setText(user.getUserName());
+        labelUsername.setText(String.format("%s %s", labelUsername.getText(), user.getUserName()));
         this.chatRepository = chatRepository;
         this.messageRepository = messageRepository;
         updateChatList();
@@ -77,6 +80,15 @@ public class ClientChatGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 ChatCreateGUI chatCreateGUI = new ChatCreateGUI(user, clientChatGUI);
                 chatCreateGUI.setVisible(true);
+            }
+        });
+        buttonOpenGlobalChat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (globalChatGUI == null) {
+                    globalChatGUI = new GlobalChatGUI(user, client, new GlobalChatMessageRepositoryImpl());
+                }
+                globalChatGUI.setVisible(true);
             }
         });
     }
@@ -131,5 +143,17 @@ public class ClientChatGUI extends JFrame {
     public void updateChatListAndSelectedChatTextArea() {
         updateChatList();
         updateSelectedChatTextArea();
+    }
+
+    public void updateGlobalChat() {
+        if (globalChatGUI != null) {
+            globalChatGUI.updateChat();
+        }
+    }
+
+    public void updateOnlineUserTextAreaOfGlobalChatGUI(){
+        if(globalChatGUI != null){
+            globalChatGUI.updateOnlineUserTextArea();
+        }
     }
 }

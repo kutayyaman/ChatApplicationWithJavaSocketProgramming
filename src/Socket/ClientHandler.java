@@ -1,10 +1,7 @@
 package Socket;
 
-import Entity.Message;
 import Entity.User;
-import Repository.Impl.MessageRepositoryImpl;
 import Repository.Impl.UserRepositoryPostgre;
-import Repository.MessageRepository;
 import Repository.UserRepository;
 
 import java.io.*;
@@ -28,11 +25,16 @@ public class ClientHandler implements Runnable {
             this.clientUsername = bufferedReader.readLine(); //socket araciligiyla ilk basta client baglanirken bu tarafa userName bilgisini yollamasini bekliyor
             clientHandlers.add(this);
             this.userRepository = new UserRepositoryPostgre();
+            newUserJoinedTrigger();
             //broadcastMessage("SERVER: " + clientUsername + " has entered the chat!");
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
 
+    }
+
+    public String getClientUsername() {
+        return clientUsername;
     }
 
     @Override
@@ -46,7 +48,11 @@ public class ClientHandler implements Runnable {
                 String message = splittedMessage[1];
                 Integer chatId = Integer.valueOf(splittedMessage[2]);
 
-                sendMessageToChat(senderUsername, message, chatId);
+                if (chatId == 0) {
+                    sendMessageToGlobalChat();
+                } else {
+                    sendMessageToChat(senderUsername, message, chatId);
+                }
                 //broadcastMessage("sender: "+senderUsername+" message: "+ message+ " chatId: "+chatId);
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
@@ -66,6 +72,30 @@ public class ClientHandler implements Runnable {
                     clientHandler.bufferedWriter.newLine();
                     clientHandler.bufferedWriter.flush();
                 }
+            } catch (IOException e) {
+                closeEverything(socket, bufferedReader, bufferedWriter);
+            }
+        }
+    }
+
+    public void sendMessageToGlobalChat() {
+        for (ClientHandler clientHandler : clientHandlers) {
+            try {
+                clientHandler.bufferedWriter.write("globalMessage");
+                clientHandler.bufferedWriter.newLine();
+                clientHandler.bufferedWriter.flush();
+            } catch (IOException e) {
+                closeEverything(socket, bufferedReader, bufferedWriter);
+            }
+        }
+    }
+
+    public void newUserJoinedTrigger() {
+        for (ClientHandler clientHandler : clientHandlers) {
+            try {
+                clientHandler.bufferedWriter.write("newUserJoined");
+                clientHandler.bufferedWriter.newLine();
+                clientHandler.bufferedWriter.flush();
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
             }

@@ -50,7 +50,14 @@ public class Client {
                     try {
                         msgFromServer = bufferedReader.readLine();
                         System.out.println(msgFromServer); // bu clienta mesaj geldiyse hem aktif sohbeti hem chat listesini guncellemeli yani buraya ClientChatGUI'dan methodlar cagrilcak
-                        clientChatGUI.updateChatListAndSelectedChatTextArea();
+                        if (msgFromServer.toLowerCase().contains("globalmessage")) {
+                            clientChatGUI.updateGlobalChat();
+                        } else if (msgFromServer.toLowerCase().contains("newuserjoined")) {
+                            clientChatGUI.updateOnlineUserTextAreaOfGlobalChatGUI();
+                        } else {
+                            clientChatGUI.updateChatListAndSelectedChatTextArea();
+                        }
+
                     } catch (IOException e) {
                         closeEverything(socket, bufferedReader, bufferedWriter);
                     }
