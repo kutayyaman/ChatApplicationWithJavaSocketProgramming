@@ -25,8 +25,7 @@ public class ClientHandler implements Runnable {
             this.clientUsername = bufferedReader.readLine(); //socket araciligiyla ilk basta client baglanirken bu tarafa userName bilgisini yollamasini bekliyor
             clientHandlers.add(this);
             this.userRepository = new UserRepositoryPostgre();
-            newUserJoinedTrigger();
-            //broadcastMessage("SERVER: " + clientUsername + " has entered the chat!");
+            sendOnlineUsersToAllUsers();
         } catch (IOException e) {
             closeEverything(socket, bufferedReader, bufferedWriter);
         }
@@ -43,17 +42,20 @@ public class ClientHandler implements Runnable {
         while (socket.isConnected()) {
             try {
                 messageFromClient = bufferedReader.readLine();
-                String[] splittedMessage = messageFromClient.split(":");
-                String senderUsername = splittedMessage[0];
-                String message = splittedMessage[1];
-                Integer chatId = Integer.valueOf(splittedMessage[2]);
-
-                if (chatId == 0) {
-                    sendMessageToGlobalChat();
+                if (messageFromClient.equals("getOnlineUsers")) {
+                    sendOnlineUsers();
                 } else {
-                    sendMessageToChat(senderUsername, message, chatId);
+                    String[] splittedMessage = messageFromClient.split(":");
+                    String senderUsername = splittedMessage[0];
+                    String message = splittedMessage[1];
+                    Integer chatId = Integer.valueOf(splittedMessage[2]);
+
+                    if (chatId == 0) {
+                        sendMessageToGlobalChat();
+                    } else {
+                        sendMessageToChat(senderUsername, message, chatId);
+                    }
                 }
-                //broadcastMessage("sender: "+senderUsername+" message: "+ message+ " chatId: "+chatId);
             } catch (IOException e) {
                 closeEverything(socket, bufferedReader, bufferedWriter);
                 break;
@@ -90,10 +92,31 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public void newUserJoinedTrigger() {
+    public void sendOnlineUsers() {
+        String onlineUsers = "onlineUsers: ";
+        for (ClientHandler clientHandler : clientHandlers) {
+            String clientUsername = clientHandler.getClientUsername();
+            onlineUsers += String.format("%s,", clientUsername);
+        }
+        try {
+            bufferedWriter.write(onlineUsers);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+        } catch (IOException e) {
+            closeEverything(socket, bufferedReader, bufferedWriter);
+        }
+
+    }
+
+    public void sendOnlineUsersToAllUsers() {
+        String onlineUsers = "onlineUsers: ";
+        for (ClientHandler clientHandler : clientHandlers) {
+            String clientUsername = clientHandler.getClientUsername();
+            onlineUsers += String.format("%s,", clientUsername);
+        }
         for (ClientHandler clientHandler : clientHandlers) {
             try {
-                clientHandler.bufferedWriter.write("newUserJoined");
+                clientHandler.bufferedWriter.write(onlineUsers);
                 clientHandler.bufferedWriter.newLine();
                 clientHandler.bufferedWriter.flush();
             } catch (IOException e) {

@@ -58,6 +58,10 @@ public class ClientChatGUI extends JFrame {
             e.printStackTrace();
         }
 
+        if (globalChatGUI == null) {
+            globalChatGUI = new GlobalChatGUI(user, client, new GlobalChatMessageRepositoryImpl());
+        }
+
 
         buttonSend.addActionListener(new ActionListener() {
             @Override
@@ -146,14 +150,17 @@ public class ClientChatGUI extends JFrame {
     }
 
     public void updateGlobalChat() {
-        if (globalChatGUI != null) {
-            globalChatGUI.updateChat();
+        if (globalChatGUI == null) {
+            globalChatGUI = new GlobalChatGUI(user, client, new GlobalChatMessageRepositoryImpl());
         }
+        globalChatGUI.updateChat();
     }
 
-    public void updateOnlineUserTextAreaOfGlobalChatGUI(){
-        if(globalChatGUI != null){
-            globalChatGUI.updateOnlineUserTextArea();
+    public void updateOnlineUsersTextAreaOfGlobalChatGUI(String onlineUsers) {
+        if (globalChatGUI == null) {
+            globalChatGUI = new GlobalChatGUI(user, client, new GlobalChatMessageRepositoryImpl());
         }
+        globalChatGUI.updateOnlineUserTextArea(onlineUsers);
     }
+
 }

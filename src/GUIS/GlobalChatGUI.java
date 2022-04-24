@@ -31,7 +31,7 @@ public class GlobalChatGUI extends JFrame {
         this.globalChatMessageRepository = globalChatMessageRepository;
 
         updateChat();
-        updateOnlineUserTextArea();
+        client.sendGetOnlineUserRequestToServer();
 
         buttonSend.addActionListener(new ActionListener() {
             @Override
@@ -58,10 +58,15 @@ public class GlobalChatGUI extends JFrame {
         textAreaGlobalChat.setText(allMessagesAsString);
     }
 
-    public void updateOnlineUserTextArea() {
+    public void updateOnlineUserTextArea(String onlineUsers) {
+        String onlineUsersTextAreaString = "";
+        String[] tagAndUsers = onlineUsers.split(":");
+        String[] onlineUsersArray = tagAndUsers[1].split(",");
 
-        String onlineUsersString = "Henuz bu kismi kodlamadim";
-        textAreaOnlineUsers.setText(onlineUsersString);
+        for (String onlineUser : onlineUsersArray) {
+            onlineUsersTextAreaString += String.format("%s\n", onlineUser);
+        }
+        textAreaOnlineUsers.setText(onlineUsersTextAreaString);
     }
 
 }
